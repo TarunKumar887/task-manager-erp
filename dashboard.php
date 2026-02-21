@@ -1,10 +1,17 @@
 <?php
 session_start();
+
 // Security check: If not logged in, kick back to login page
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
+
+require_once 'src/db.php';
+// Count total employees
+$emp_count_query = "SELECT COUNT(*) as total FROM employees";
+$emp_count_result = $conn->query($emp_count_query);
+$emp_count = $emp_count_result->fetch_assoc()['total'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,7 +58,7 @@ if (!isset($_SESSION['user_id'])) {
             <div class="card card-stats bg-primary text-white shadow">
                 <div class="card-body">
                     <h5>Total Employees</h5>
-                    <h2 class="display-4">0</h2>
+                    <h2 class="display-4"><?php echo $emp_count; ?></h2>
                 </div>
             </div>
         </div>
