@@ -12,6 +12,16 @@ require_once 'src/db.php';
 $emp_count_query = "SELECT COUNT(*) as total FROM employees";
 $emp_count_result = $conn->query($emp_count_query);
 $emp_count = $emp_count_result->fetch_assoc()['total'];
+
+// Count total projects
+$proj_count_query = "SELECT COUNT(*) as total FROM projects";
+$proj_count_result = $conn->query($proj_count_query);
+$proj_count = $proj_count_result->fetch_assoc()['total'];
+
+// Count pending tasks
+$task_count_query = "SELECT COUNT(*) as total FROM tasks WHERE status = 'Pending'";
+$task_count_result = $conn->query($task_count_query);
+$task_count = $task_count_result->fetch_assoc()['total'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +76,7 @@ $emp_count = $emp_count_result->fetch_assoc()['total'];
             <div class="card card-stats bg-success text-white shadow">
                 <div class="card-body">
                     <h5>Active Projects</h5>
-                    <h2 class="display-4">0</h2>
+                    <h2 class="display-4"><?php echo $proj_count; ?></h2>
                 </div>
             </div>
         </div>
@@ -74,7 +84,7 @@ $emp_count = $emp_count_result->fetch_assoc()['total'];
             <div class="card card-stats bg-warning text-white shadow">
                 <div class="card-body">
                     <h5>Pending Tasks</h5>
-                    <h2 class="display-4">0</h2>
+                    <h2 class="display-4"><?php echo $task_count; ?></h2>
                 </div>
             </div>
         </div>
