@@ -38,12 +38,15 @@ $task_count = ($task_count_result) ? $task_count_result->fetch_assoc()['total'] 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Mini ERP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
         body { background-color: #f8f9fa; }
         .sidebar { height: 100vh; width: 250px; position: fixed; background: #212529; padding-top: 20px; color: white; }
-        .sidebar a { color: #adb5bd; text-decoration: none; padding: 15px 25px; display: block; transition: 0.3s; border-radius: 5px; margin: 0 10px; }
+        .sidebar h3 { font-weight: 800; text-transform: uppercase; padding: 0 20px; }
+        .sidebar a { color: #adb5bd; text-decoration: none; padding: 15px 25px; display: block; transition: 0.3s; border-radius: 5px; margin: 0 10px; font-weight: 700; }
         .sidebar a:hover { color: white; background: #343a40; }
-        .sidebar .active { color: white; background: #0d6efd; }
+        .sidebar .active { color: white; background: #0d6efd; font-weight: 800; }
+        .sidebar a.text-danger { font-weight: 900; margin-top: 20px; }
         .main-content { margin-left: 250px; padding: 30px; }
         .card-stats { border: none; border-radius: 10px; transition: 0.3s; height: 100%; }
         .card-stats:hover { transform: translateY(-5px); }
