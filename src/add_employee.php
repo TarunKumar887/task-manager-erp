@@ -1,20 +1,37 @@
 <?php
+session_start();
 require_once 'db.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = $_POST['full_name'];
-    $email = $_POST['email'];
-    $pos = $_POST['position'];
-    $sal = $_POST['salary'];
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../dashboard.php");
+    exit();
+}
 
-    $sql = "INSERT INTO employees (full_name, email, position, salary) VALUES (?, ?, ?, ?)";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name    = trim($_POST['full_name']);
+    $email   = trim($_POST['email']);
+    $dept_id = intval($_POST['dept_id']);
+    $pos     = trim($_POST['position']);
+    $sal     = floatval($_POST['salary']);
+
+    if (empty($name) || empty($email) || empty($dept_id)) {
+        header("Location: ../employees.php?error=missing_fields");
+        exit();
+    }
+
+    $sql = "INSERT INTO employees (full_name, email, dept_id, position, salary) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssd", $name, $email, $pos, $sal);
+    $stmt->bind_param("ssisd", $name, $email, $dept_id, $pos, $sal);
 
     if ($stmt->execute()) {
-        header("Location: ../employees.php?success=1");
+        header("Location: ../employees.php?success=added");
+        exit();
     } else {
-        echo "Error: " . $conn->error;
+        header("Location: ../employees.php?error=" . urlencode($conn->error));
+        exit();
     }
+} else {
+    header("Location: ../employees.php");
+    exit();
 }
 ?>

@@ -2,80 +2,115 @@
 session_start();
 require_once 'src/db.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php");
-    exit();
+if (!isset($_SESSION['user_id'])) { 
+    header("Location: index.php"); 
+    exit(); 
 }
 
+$user_role = $_SESSION['role'] ?? 'user';
 $result = $conn->query("SELECT * FROM projects ORDER BY id DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Projects - Mini ERP</title>
+    <title>Projects - Mini ERP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body { background-color: #f8f9fa; }
         .sidebar { height: 100vh; width: 250px; position: fixed; background: #212529; color: white; padding-top: 20px; }
-        .sidebar a { color: #adb5bd; text-decoration: none; padding: 15px 25px; display: block; }
-        .sidebar a:hover, .sidebar .active { color: white; background: #0d6efd; }
+        .sidebar a { color: #adb5bd; text-decoration: none; padding: 15px 25px; display: block; transition: 0.3s; border-radius: 5px; margin: 0 10px; }
+        .sidebar a:hover { color: white; background: #343a40; }
+        .sidebar .active { color: white; background: #0d6efd; }
         .main-content { margin-left: 250px; padding: 30px; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h3 class="text-center">Mini ERP</h3>
+<div class="sidebar shadow">
+    <h3 class="text-center mb-4">Mini ERP</h3>
     <a href="dashboard.php">🏠 Dashboard</a>
-    <a href="employees.php">👥 Employees</a>
+    
+    <?php if($user_role === 'admin'): ?>
+        <a href="employees.php">👥 Employees</a>
+        <a href="departments.php">🏢 Departments</a>
+    <?php endif; ?>
+    
     <a href="projects.php" class="active">📁 Projects</a>
-    <hr>
+    <a href="tasks.php">✅ Tasks</a>
+    <hr class="mx-3">
     <a href="src/logout.php" class="text-danger">🚪 Logout</a>
 </div>
 
 <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Project Management</h2>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addProjectModal">+ Create Project</button>
-    </div>
+    <nav class="navbar navbar-light bg-white mb-4 shadow-sm rounded p-3">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Project Directory</span>
+            <?php if($user_role === 'admin'): ?>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectModal">+ Create Project</button>
+            <?php endif; ?>
+        </div>
+    </nav>
 
-    <table class="table table-hover bg-white shadow-sm rounded">
-        <thead class="table-dark">
-            <tr>
-                <th>Project Name</th>
-                <th>Deadline</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while($row = $result->fetch_assoc()): ?>
-            <tr>
-                <td><strong><?= $row['project_name'] ?></strong></td>
-                <td><?= $row['deadline'] ?></td>
-                <td><span class="badge bg-info text-dark"><?= $row['status'] ?></span></td>
-                <td>
-                    <a href="src/delete_project.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this project?')">Delete</a>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-hover bg-white shadow-sm rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Project Name</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <?php if($user_role === 'admin'): ?>
+                        <th>Actions</th>
+                    <?php endif; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if($result->num_rows > 0): ?>
+                    <?php while($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><strong><?= htmlspecialchars($row['project_name']) ?></strong></td>
+                        <td><?= date('M d, Y', strtotime($row['deadline'])) ?></td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <?php if($user_role === 'admin'): ?>
+                        <td>
+                            <a href="src/delete_project.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                        <?php endif; ?>
+                    </tr>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <tr><td colspan="4" class="text-center py-4 text-muted">No projects found.</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
+<?php if($user_role === 'admin'): ?>
 <div class="modal fade" id="addProjectModal" tabindex="-1">
     <div class="modal-dialog">
         <form action="src/add_project.php" method="POST" class="modal-content">
-            <div class="modal-header"><h5>Add New Project</h5></div>
-            <div class="modal-body">
-                <div class="mb-3"><label>Project Name</label><input type="text" name="project_name" class="form-control" required></div>
-                <div class="mb-3"><label>Description</label><textarea name="description" class="form-control"></textarea></div>
-                <div class="mb-3"><label>Deadline</label><input type="date" name="deadline" class="form-control" required></div>
+            <div class="modal-header">
+                <h5 class="modal-title">New Project Assignment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-footer"><button type="submit" class="btn btn-success">Save Project</button></div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Project Name</label>
+                    <input type="text" name="project_name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Deadline Date</label>
+                    <input type="date" name="deadline" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary w-100">Launch Project</button>
+            </div>
         </form>
     </div>
 </div>
+<?php endif; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
