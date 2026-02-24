@@ -65,8 +65,8 @@ A streamlined Enterprise Resource Planning (ERP) and Task Management solution bu
   - username: admin
   - Password: admin123
 - User
-  - username: amitxyz@gmail.com
-  - password: amit123
+  - username: tarunk6952@gmail.com
+  - password: Employee@123
 
 
 ## 🚧 Known Limitations
