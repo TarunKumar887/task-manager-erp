@@ -122,6 +122,9 @@ $depts_list = $depts->fetch_all(MYSQLI_ASSOC);
             <div class="modal-body">
                 <div class="mb-3"><label class="form-label">Full Name</label><input type="text" name="full_name" class="form-control" required></div>
                 <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required></div>
+                
+                <div class="mb-3"><label class="form-label text-primary">Login Password</label><input type="password" name="password" class="form-control" placeholder="Create unique password" required></div>
+                
                 <div class="mb-3">
                     <label class="form-label">Department</label>
                     <select name="dept_id" class="form-select" required>
@@ -152,6 +155,12 @@ $depts_list = $depts->fetch_all(MYSQLI_ASSOC);
             </div>
             <div class="modal-body">
                 <div class="mb-3"><label class="form-label">Full Name</label><input type="text" name="full_name" id="edit_name" class="form-control" required></div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-primary">New Password (Leave blank to keep current)</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter new password to reset">
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label">Department</label>
                     <select name="dept_id" id="edit_dept" class="form-select" required>
