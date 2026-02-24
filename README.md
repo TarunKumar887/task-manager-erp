@@ -10,49 +10,64 @@ A streamlined Enterprise Resource Planning (ERP) and Task Management solution bu
 - **Database:** MySQL 5.7+ (Hosted on InfinityFree Cluster)
 - **Frontend:** HTML5, CSS3, Bootstrap 5.3.3
 - **Icons:** Bootstrap Icons 1.11.3
-- **Server:** Apache (Linux/InfinityFree Stack)
-- **Authentication:** Session-based with dual-table verification
+- **Server:** Apache (XAMPP / LAMPP Stack)
+- **Authentication:** BCrypt password hashing
 
 ## ✨ Features Implemented
 
 ### 1. Authentication & Security
-- **Secure Login:** Role-aware authentication checking both `admin` and `employees` tables.
-- **Session Management:** Secure session handling to prevent unauthorized dashboard access.
-- **Global Config:** Centralized `db.php` for easy environment switching (Local vs. Production).
+1. **Authentication & Security**
+   - Email/login-based authentication with BCrypt hashing
+   - Session-based authorization with middleware guards
+   - Login activity tracking (user_login_records table)
+   - Secure logout functionality
 
-### 2. Role-Based Access Control (RBAC)
-- **Admin Dashboard:** Full access to employee management, project creation, and task assignment.
-- **Employee Dashboard:** Personalized view restricted to assigned tasks and personal profile data.
-- **UI Logic:** Navigation links (like "Manage Employees") are dynamically hidden based on user role.
+2. **Role-Based Access Control (RBAC)**
+   - Admin and User roles with permission scaffolding
+   - Role-aware UI (Employees link visible to Admin only)
 
-### 3. Employee Management
-- **CRUD Operations:** Admin can add, view, and manage employee records.
-- **Dual-Table Architecture:** Separate storage for administrative staff and general employees for better data integrity.
+3. **Employee Management**
+   - Admin-only create, read, update, and soft-delete workflows
+   - Bootstrap modal forms for Add/Edit operations
+   - Real-time validation and error handling
 
-### 4. Task & Project Management
-- **Assignment System:** Admins can link tasks to specific projects and assign them to individual employees.
-- **Status Tracking:** Real-time updates for task statuses (Pending, In Progress, Completed).
-- **Project Scaffolding:** Ability to categorize work into specific Project buckets.
+4. **Project Management**
+   - Admin create project via modal
+   - Admin edit projects in-place with full modals
+   - Project status tracking (Active/Inactive)
+   - Description support for each project
+
+5. **Task Management**
+   - Admin assign tasks to employees with projects and due dates
+   - Task status tracking (Pending, In Progress, Completed)
+   - Task analytics dashboard (total, completed, overdue, due-soon counts)
+   - Role-specific task views (admin sees all, users see assigned)
+   - Task edit modals for admins with status/assignee updates
+   - Mark Done action for assigned users and admins
+
+6. **User Interface**
+   - Responsive Bootstrap 5 layout
+   - Shared header/footer components with search bar
+   - Card layouts for projects and dashboard stats
+   - Responsive table for task listings
+   - Admin action buttons (Edit, Done, etc.)
+   - Role-aware navigation
 
 ## 📦 Setup & Deployment
 
-1. **Database Configuration:**
-   - Update `src/db.php` with your MySQL credentials.
-   - For InfinityFree, use the `sqlXXX.infinityfree.com` hostname.
+1. Configure database in config/db.php
+2. Import database/schema.sql into your MySQL database
+3. Start Apache and MySQL
+4. Open the app at https://taskmanagererp.infinityfree.me/
 
-2. **Import Schema:**
-   - Import the provided `.sql` file via phpMyAdmin.
+## Test Credentials
+- Admin
+  - username: admin
+  - Password: admin123
+- User
+  - username: amitxyz@gmail.com
+  - password: amit123
 
-3. **File Upload:**
-   - Upload all files to the `/htdocs` directory.
-   - Ensure the entry point is named `index.php`.
-
-## 🔑 Test Credentials (Production)
-
-| Role | Email / Username | Password |
-| :--- | :--- | :--- |
-| **Admin** | admin (or your admin email) | admin123 |
-| **Employee** | amitxyz@gmail.com | amit123 |
 
 ## 🚧 Known Limitations
 - **Case Sensitivity:** Being hosted on Linux, file paths are case-sensitive (e.g., `src/db.php` vs `src/DB.php`).
@@ -61,12 +76,40 @@ A streamlined Enterprise Resource Planning (ERP) and Task Management solution bu
 
 ## 📸 Screenshots
 
-### 🖥 Login Interface
-*Clean, Bootstrap-powered login screen with validation.*
-![Login Page Interface](assets/Login Page.png)
+### Login Page
+![Login Page](/assets/Login_page.png)
+- Email/login input field
+- Password field with secure handling
+- Bootstrap alert for invalid credentials
 
-### 📊 Admin Dashboard
-*Overview of system stats, including total employees and active projects.*
+### Dashboard
+![Dashboard](/assets/Admin.png)
+- Quick stats cards (Total Projects, Active Tasks, Team Members)
+- Role-aware navigation (Admin sees Employees link)
+- Responsive grid layout
+
+### Employee Management
+![Employee Management](/assets/Employee_details.png)
+- Table with employee list
+- Add/Edit modals with validation
+- Status indicators (Active/Inactive)
+- Action buttons (Edit, Deactivate)
+
+### Project Board
+![Project Board](/assets/projects.png)
+- Card layout for projects
+- Admin Edit button per project
+- Status badge (Active/Inactive)
+- Create New Project modal
+
+### Task Manager
+![Task Manager](/assets/task_management.png)
+- Analytics cards (Total, Completed, Due Soon, Overdue)
+- Responsive table with task details
+- Status badges with color coding
+- Admin Edit and Done buttons
+- Assign New Task modal
+- Role-specific view (admin sees all, users see assigned)
 
 ---
-Developed by [Your Name/Team Name]
+Developed by [Tarun Kumar]
